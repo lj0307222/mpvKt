@@ -182,11 +182,9 @@ data class FilePickerScreen(val uri: String) : Screen {
     var size: String? by remember { mutableStateOf(null) }
     var time: String? by remember { mutableStateOf(null) }
     LaunchedEffect(Unit) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        lastModified?.let {
-          time = Instant.ofEpochMilli(lastModified).atZone(ZoneId.systemDefault())
-            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss"))
-        }
+      lastModified?.let {
+        time = Instant.ofEpochMilli(lastModified).atZone(ZoneId.systemDefault())
+          .format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss"))
       }
       if (isDirectory) return@LaunchedEffect
       length?.let { size = it.asHumanReadableByteCountBin() }

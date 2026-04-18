@@ -25,7 +25,6 @@
     <string name="pref_appearance_darkmode_dark">ダーク</string>
     <string name="pref_appearance_material_you_title">Material You</string>
     <string name="pref_appearance_material_you_summary">ダイナミックカラーを有効にします</string>
-    <string name="pref_appearance_material_you_summary_disabled">Android 12 以上でのみ使用できます。</string>
 
     <string name="pref_player">プレーヤー</string>
     <string name="pref_player_summary">向き、ジェスチャー、コントロール</string>
@@ -295,3 +294,4 @@
         <item quantity="other">%1$d 秒</item>
     </plurals>
 </resources>
+

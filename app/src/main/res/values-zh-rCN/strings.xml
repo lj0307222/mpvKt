@@ -21,7 +21,6 @@
     <string name="pref_appearance_darkmode_dark">暗色</string>
     <string name="pref_appearance_material_you_title">Material You</string>
     <string name="pref_appearance_material_you_summary">启用 Material You 动态颜色</string>
-    <string name="pref_appearance_material_you_summary_disabled">只支持 Android 12 及以上版本</string>
     <string name="pref_player">播放器</string>
     <string name="pref_player_summary">屏幕方向，手势和控制</string>
     <string name="pref_player_orientation">屏幕方向</string>
@@ -216,3 +215,4 @@
     <string name="show_time_on_double_tap_to_seek">显示跳转图标</string>
 
 </resources>
+

@@ -237,42 +237,27 @@ class MediaPlaybackService : MediaBrowserServiceCompat(), MPVLib.EventObserver {
       }
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val audioAttributes = AudioAttributes.Builder()
-        .setUsage(AudioAttributes.USAGE_MEDIA)
-        .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE)
-        .build()
+    val audioAttributes = AudioAttributes.Builder()
+      .setUsage(AudioAttributes.USAGE_MEDIA)
+      .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE)
+      .build()
 
-      audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-        .setAudioAttributes(audioAttributes)
-        .setAcceptsDelayedFocusGain(true)
-        .setOnAudioFocusChangeListener(audioFocusCallback!!)
-        .build()
-    }
+    audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+      .setAudioAttributes(audioAttributes)
+      .setAcceptsDelayedFocusGain(true)
+      .setOnAudioFocusChangeListener(audioFocusCallback!!)
+      .build()
   }
 
   private fun requestAudioFocus(): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      audioFocusRequest?.let {
-        val result = audioManager.requestAudioFocus(it)
-        result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-      } ?: false
-    } else {
-      val result = audioManager.requestAudioFocus(
-        audioFocusCallback,
-        AudioManager.STREAM_MUSIC,
-        AudioManager.AUDIOFOCUS_GAIN,
-      )
+    return audioFocusRequest?.let {
+      val result = audioManager.requestAudioFocus(it)
       result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-    }
+    } ?: false
   }
 
   private fun abandonAudioFocus() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      audioFocusRequest?.let { audioManager.abandonAudioFocusRequest(it) }
-    } else {
-      audioManager.abandonAudioFocus(audioFocusCallback)
-    }
+    audioFocusRequest?.let { audioManager.abandonAudioFocusRequest(it) }
   }
 
   fun playMedia() {
@@ -292,11 +277,7 @@ class MediaPlaybackService : MediaBrowserServiceCompat(), MPVLib.EventObserver {
       pauseMedia()
       abandonAudioFocus()
       mediaSession.isActive = false
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        stopForeground(STOP_FOREGROUND_REMOVE)
-      } else {
-        stopForeground(true)
-      }
+      stopForeground(STOP_FOREGROUND_REMOVE)
       stopSelf()
     } catch (e: Exception) {
       Log.e(TAG, "Error stopping media", e)
@@ -353,21 +334,19 @@ class MediaPlaybackService : MediaBrowserServiceCompat(), MPVLib.EventObserver {
   }
 
   private fun createNotificationChannel() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val channel = NotificationChannel(
-        NOTIFICATION_CHANNEL_ID,
-        getString(R.string.notification_channel_name),
-        NotificationManager.IMPORTANCE_LOW,
-      ).apply {
-        description = getString(R.string.notification_channel_description)
-        setShowBadge(false)
-        enableLights(false)
-        enableVibration(false)
-      }
-
-      val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-      notificationManager.createNotificationChannel(channel)
+    val channel = NotificationChannel(
+      NOTIFICATION_CHANNEL_ID,
+      getString(R.string.notification_channel_name),
+      NotificationManager.IMPORTANCE_LOW,
+    ).apply {
+      description = getString(R.string.notification_channel_description)
+      setShowBadge(false)
+      enableLights(false)
+      enableVibration(false)
     }
+
+    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.createNotificationChannel(channel)
   }
 
   private fun createNotification(): Notification {

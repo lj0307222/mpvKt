@@ -72,7 +72,7 @@ class MPVView(context: Context, attributes: AttributeSet) : BaseMPVView(context,
     MPVLib.setOptionString("tls-ca-file", "${context.filesDir.path}/cacert.pem")
 
     // Limit demuxer cache since the defaults are too high for mobile devices
-    val cacheMegs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) 64 else 32
+    val cacheMegs = 64
     MPVLib.setOptionString("demuxer-max-bytes", "${cacheMegs * 1024 * 1024}")
     MPVLib.setOptionString("demuxer-max-back-bytes", "${cacheMegs * 1024 * 1024}")
     //

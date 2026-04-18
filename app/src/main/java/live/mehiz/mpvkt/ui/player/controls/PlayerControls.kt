@@ -515,11 +515,7 @@ fun PlayerControls(
             customButtonTitle = customButtonTitle,
             isPipAvailable = activity.isPipSupported,
             onPipClick = {
-              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                activity.enterPictureInPictureMode(activity.createPipParams())
-              } else {
-                activity.enterPictureInPictureMode()
-              }
+              activity.enterPictureInPictureMode(activity.createPipParams())
             },
             onAspectClick = {
               viewModel.changeVideoAspect(

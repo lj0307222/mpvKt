@@ -71,23 +71,15 @@ object AppearancePreferencesScreen : Screen {
             onClick = { preferences.darkMode.set(DarkMode.entries[it]) },
           )
           val materialYou by preferences.materialYou.collectAsState()
-          val isMaterialYouAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
           SwitchPreference(
             value = materialYou,
             onValueChange = { preferences.materialYou.set(it) },
             title = { Text(text = stringResource(id = R.string.pref_appearance_material_you_title)) },
             summary = {
               Text(
-                text = stringResource(
-                  if (isMaterialYouAvailable) {
-                    R.string.pref_appearance_material_you_summary
-                  } else {
-                    R.string.pref_appearance_material_you_summary_disabled
-                  },
-                ),
+                text = stringResource(R.string.pref_appearance_material_you_summary),
               )
             },
-            enabled = isMaterialYouAvailable,
           )
         }
       }

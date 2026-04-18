@@ -89,11 +89,7 @@ class PlayerActivity : AppCompatActivity() {
 
   private var pipRect: android.graphics.Rect? = null
   val isPipSupported by lazy {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-      false
-    } else {
-      packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-    }
+    packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
   }
   private var pipReceiver: BroadcastReceiver? = null
 
@@ -159,8 +155,7 @@ class PlayerActivity : AppCompatActivity() {
   }
 
   override fun onPause() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
-      !isInPictureInPictureMode &&
+    if (!isInPictureInPictureMode &&
       !playerPreferences.automaticBackgroundPlayback.get()
     ) {
       viewModel.pause()
@@ -193,7 +188,6 @@ class PlayerActivity : AppCompatActivity() {
     super.onStop()
   }
 
-  @SuppressLint("NewApi")
   override fun onUserLeaveHint() {
     if (isPipSupported && viewModel.paused == false && playerPreferences.automaticallyEnterPip.get()) {
       enterPictureInPictureMode()
@@ -201,7 +195,6 @@ class PlayerActivity : AppCompatActivity() {
     super.onUserLeaveHint()
   }
 
-  @SuppressLint("NewApi")
   override fun onBackPressed() {
     if (isPipSupported && viewModel.paused == false && playerPreferences.automaticallyEnterPip.get()) {
       if (viewModel.sheetShown.value == Sheets.None && viewModel.panelShown.value == Panels.None) {
@@ -214,7 +207,7 @@ class PlayerActivity : AppCompatActivity() {
 
   override fun onStart() {
     super.onStart()
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isPipSupported) {
+    if (isPipSupported) {
       setPictureInPictureParams(createPipParams())
     }
     WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -488,7 +481,7 @@ class PlayerActivity : AppCompatActivity() {
     } else {
       (intent.data ?: intent.getParcelableExtra(Intent.EXTRA_STREAM))
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && uri != null) {
+    if (uri != null) {
       val cursor = contentResolver.query(uri, arrayOf(MediaStore.MediaColumns.DISPLAY_NAME), null, null)
       if (cursor?.moveToFirst() == true) return cursor.getString(0).also { cursor.close() }
     }
@@ -496,12 +489,8 @@ class PlayerActivity : AppCompatActivity() {
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      if (!isInPictureInPictureMode) {
-        viewModel.changeVideoAspect(playerPreferences.videoAspect.get())
-      } else {
-        viewModel.hideControls()
-      }
+    if (!isInPictureInPictureMode) {
+      viewModel.changeVideoAspect(playerPreferences.videoAspect.get())
     }
     super.onConfigurationChanged(newConfig)
   }
@@ -638,17 +627,14 @@ class PlayerActivity : AppCompatActivity() {
     setIntent(intent)
   }
 
-  @RequiresApi(Build.VERSION_CODES.O)
   fun createPipParams(): PictureInPictureParams {
     val builder = PictureInPictureParams.Builder()
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       builder.setTitle(MPVLib.getPropertyString("media-title") ?: fileName)
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      val autoEnter = playerPreferences.automaticallyEnterPip.get()
-      builder.setAutoEnterEnabled(viewModel.paused == false && autoEnter)
-      builder.setSeamlessResizeEnabled(viewModel.paused == false && autoEnter)
-    }
+    val autoEnter = playerPreferences.automaticallyEnterPip.get()
+    builder.setAutoEnterEnabled(viewModel.paused == false && autoEnter)
+    builder.setSeamlessResizeEnabled(viewModel.paused == false && autoEnter)
     builder.setActions(createPipActions(this, viewModel.paused == true))
     builder.setSourceRectHint(pipRect)
     MPVLib.getPropertyInt("video-params/h")?.let {
@@ -669,9 +655,7 @@ class PlayerActivity : AppCompatActivity() {
       super.onPictureInPictureModeChanged(false, newConfig)
       return
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      setPictureInPictureParams(createPipParams())
-    }
+    setPictureInPictureParams(createPipParams())
     viewModel.hideControls()
     viewModel.hideSeekBar()
     viewModel.isBrightnessSliderShown.update { false }
@@ -686,9 +670,7 @@ class PlayerActivity : AppCompatActivity() {
           PIP_FF -> viewModel.handleRightDoubleTap()
           PIP_FR -> viewModel.handleLeftDoubleTap()
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-          setPictureInPictureParams(createPipParams())
-        }
+        setPictureInPictureParams(createPipParams())
       }
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

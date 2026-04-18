@@ -1,11 +1,10 @@
 import com.android.build.api.variant.FilterConfiguration
 import io.gitlab.arturbosch.detekt.Detekt
-import org.apache.commons.io.output.ByteArrayOutputStream
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   alias(libs.plugins.ksp)
   alias(libs.plugins.android.application)
-  alias(libs.plugins.jetbrains.kotlin.android)
   alias(libs.plugins.kotlin.compose.compiler)
   alias(libs.plugins.room)
   alias(libs.plugins.detekt)
@@ -19,7 +18,7 @@ android {
 
   defaultConfig {
     applicationId = "live.mehiz.mpvkt"
-    minSdk = 21
+    minSdk = 31
     targetSdk = 36
     versionCode = 12
     versionName = "0.1.6"
@@ -35,8 +34,8 @@ android {
     abi {
       isEnable = true
       reset()
-      include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-      isUniversalApk = true
+      include("arm64-v8a")
+      isUniversalApk = false
     }
   }
 
@@ -62,11 +61,8 @@ android {
     }
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-  kotlinOptions {
-    jvmTarget = "17"
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
   }
   buildFeatures {
     compose = true
@@ -102,6 +98,7 @@ android {
 
 kotlin {
   compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_21)
     freeCompilerArgs.addAll("-Xwhen-guards", "-Xcontext-parameters")
   }
 }
@@ -169,17 +166,15 @@ tasks.withType<Detekt>().configureEach {
   }
 }
 
-fun getCommitCount(): String = runCommand("git rev-list --count HEAD")
-fun getCommitSha(): String = runCommand("git rev-parse --short HEAD")
-fun runCommand(command: String): String {
-  val stdOut = ByteArrayOutputStream()
-  exec {
-    commandLine = command.split(' ')
-    standardOutput = stdOut
-  }
-  return String(stdOut.toByteArray()).trim()
-}
+fun getCommitCount(): String = runCommand("git", "rev-list", "--count", "HEAD")
+fun getCommitSha(): String = runCommand("git", "rev-parse", "--short", "HEAD")
+fun runCommand(vararg command: String): String =
+  providers.exec {
+    commandLine(command.toList())
+  }.standardOutput.asText.get().trim()
 
 aboutLibraries {
-  excludeFields = arrayOf("generated")
+  export {
+    excludeFields.add("generated")
+  }
 }

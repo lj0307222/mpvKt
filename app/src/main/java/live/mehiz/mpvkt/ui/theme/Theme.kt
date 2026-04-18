@@ -105,7 +105,7 @@ fun MpvKtTheme(content: @Composable () -> Unit) {
   val context = LocalContext.current
 
   val colorScheme = when {
-    dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+    dynamicColor -> {
       when (darkMode) {
         DarkMode.Dark -> dynamicDarkColorScheme(context)
         DarkMode.Light -> dynamicLightColorScheme(context)

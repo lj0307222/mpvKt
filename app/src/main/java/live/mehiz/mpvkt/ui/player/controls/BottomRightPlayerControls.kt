@@ -23,7 +23,6 @@ import live.mehiz.mpvkt.ui.player.executeLongClick
 import live.mehiz.mpvkt.ui.theme.spacing
 
 @OptIn(ExperimentalFoundationApi::class)
-@SuppressLint("NewApi")
 @Composable
 fun BottomRightPlayerControls(
   customButton: CustomButtonEntity?,

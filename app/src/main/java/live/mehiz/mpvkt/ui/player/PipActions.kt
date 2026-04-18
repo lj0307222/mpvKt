@@ -5,12 +5,9 @@ import android.app.RemoteAction
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
-import android.os.Build.VERSION_CODES.O
 import androidx.annotation.DrawableRes
-import androidx.annotation.RequiresApi
 import live.mehiz.mpvkt.R
 
-@RequiresApi(O)
 fun createPipActions(
   context: Context,
   isPaused: Boolean,
@@ -44,7 +41,6 @@ fun createPipActions(
   )
 )
 
-@RequiresApi(O)
 fun createPipAction(
   context: Context,
   title: String,

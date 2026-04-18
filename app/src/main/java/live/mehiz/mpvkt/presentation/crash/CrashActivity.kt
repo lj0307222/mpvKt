@@ -143,14 +143,9 @@ class CrashActivity : ComponentActivity() {
     fun collectLogcat(): String {
       val process = Runtime.getRuntime()
       val reader = BufferedReader(InputStreamReader(process.exec("logcat -d").inputStream))
-      val logcat = StringBuilder()
-      // reader.lines() looks much nicer so why not use it on devices that support it?
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        reader.lines().forEach(logcat::appendLine)
-      } else {
-        reader.readLines().forEach(logcat::appendLine)
+      return buildString {
+        reader.lines().forEach(::appendLine)
       }
-      return logcat.toString()
     }
 
     fun collectDeviceInfo(): String {

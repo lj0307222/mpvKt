@@ -25,7 +25,6 @@
     <string name="pref_appearance_darkmode_dark">Escuro</string>
     <string name="pref_appearance_material_you_title">Material You</string>
     <string name="pref_appearance_material_you_summary">Ativa as cores dinâmicas do Material You.</string>
-    <string name="pref_appearance_material_you_summary_disabled">Disponível apenas para Android 12 ou superior.</string>
 
     <string name="pref_player">Reprodutor</string>
     <string name="pref_player_summary">Orientação, gestos e controles</string>
@@ -214,3 +213,4 @@
         <item quantity="other">%1$d items</item>
     </plurals>
 </resources>
+
